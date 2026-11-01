@@ -63,6 +63,22 @@ The user-approved Supabase reset is complete for project `zixzqrsrnthgszgxqnfk`:
 
 At the user's explicit request all 28 CREATE TABLE statements now use IF NOT EXISTS. This does not make every ALTER/INDEX/trigger statement rerunnable or reconcile different existing columns. Migration checksums changed as part of this approved fresh reset: existing local demo databases with earlier V1–V6 history need a separately reviewed upgrade/reset plan; do not automatically repair checksums or delete their data. The optional `supabase` profile and `scripts/prepare-supabase-schema.sql` remain a separate private-schema alternative and were not used for the approved public reset. Selecting that profile requires its own prepared schema; it is not the profile for the current hosted public tables.
 
+## Run with Docker Compose
+
+Requires Docker Engine and the Docker Compose plugin. Compose starts its own PostgreSQL 17 database, runs the backend with the `prod` profile so Flyway migrates that local database and JPA validates it, then serves the built frontend with Nginx. Nginx proxies `/api` to the backend. The Postgres data persists in the `oasis_postgres_data` named volume.
+
+From the repository root, copy `.env.example` to `.env` and replace the sample `POSTGRES_PASSWORD` with a strong local password. This root `.env` is only for the Compose database. Do not copy `oasis-api/.env` here: that file contains the Supabase datasource settings for IDE runs.
+
+```powershell
+Copy-Item .env.example .env
+# Edit .env and set POSTGRES_PASSWORD to a strong local value.
+docker compose up --build -d
+docker compose ps
+docker compose logs -f api
+```
+
+Open http://localhost:5173. To stop the containers while retaining database data, run `docker compose down`. To remove the local database volume as well, run `docker compose down --volumes`; that permanently deletes the Compose database contents. This stack is for local development; before serving it publicly, use HTTPS and set `OASIS_COOKIE_SECURE=true` in the root `.env`.
+
 ## Integration status
 
 The shared verified-event pipeline, order snapshots, deduplication, immutable receipts and unused full-refund lifecycle are implemented and tested with the local simulator. Real provider credentials/protocol/card/PromptPay support and sandbox validation are pending; email and LINE OA remain unconfigured. A browser redirect never marks an order paid. Deployment, production infrastructure, commit and push remain outside scope.
@@ -90,7 +106,7 @@ The PostgreSQL suite resets only its exact pinned `oasis_phase1_test` database; 
 
 Backend code is organized into `config`, `controller`, `models`, `dto`, `repository`, `service` and `service/impl` under `oasis-api/src/main/java/com/jeyz9/oasisapi`. All nine production controllers live in `controller/`, keep their existing routes and depend on service interfaces. Spring Data JPA/EntityManager replaces application JdbcTemplate access; PostgreSQL-specific locks, upserts and reports remain parameterized JPA native queries inside repositories. See the architecture and JPA handoff for examples.
 
-Flyway V1–V6 still own the schema and are unchanged. Hibernate validates the PostgreSQL schema (`ddl-auto=validate`) in dev/prod and integration tests; do not switch to create/update. H2 smoke tests disable schema creation, while the opted-in PostgreSQL suite verifies the actual mappings, constraints and concurrency. Only guarded test/demo fixtures retain direct SQL setup/assertions on the test classpath.
+Flyway V1–V6 own the schema. Their current source includes the approved table-creation guards and RLS settings documented in the reset handoff; existing databases that used earlier migration checksums need a separately reviewed upgrade plan. Hibernate validates the PostgreSQL schema (`ddl-auto=validate`) in prod and integration tests; do not switch to create/update. H2 smoke tests disable schema creation, while the opted-in PostgreSQL suite verifies the actual mappings, constraints and concurrency. Only guarded test/demo fixtures retain direct SQL setup/assertions on the test classpath.
 
 Runtime configuration classes (SecurityConfig, PaymentConfiguration and NotificationConfiguration) live in `config/`, alongside the package-private SessionGuard security helper. Profile YAML files retain Spring Boot’s conventional resource locations. See [configuration handoff](docs/CONFIG_HANDOFF.md).
 
@@ -102,7 +118,7 @@ Use explicit imports for classes, annotations and static methods/fields in both 
 
 ## Supabase SQL verification
 
-Project `zixzqrsrnthgszgxqnfk` was tested through the Supabase connector on PostgreSQL 17.6: six migration SQL scripts/28 scratch tables and 16 constraint/accounting check groups passed, then the scratch schema/data rolled back. The existing ten public tables remain unchanged; the website/API connection remains local. See [Supabase SQL verification and limits](docs/SUPABASE_SQL_HANDOFF.md). `python scripts/build-supabase-probe.py` generates the rollback-only test SQL without reading credentials.
+Project `zixzqrsrnthgszgxqnfk` runs V1–V6 in its public schema: 28 application tables plus Flyway history, with RLS enabled on all 29 tables. A real JDBC startup verified Flyway checksums, JPA mappings and read-only API endpoints. Earlier rollback-only SQL compatibility checks are recorded separately in [Supabase SQL verification and limits](docs/SUPABASE_SQL_HANDOFF.md). `python scripts/build-supabase-probe.py` generates the rollback-only test SQL without reading credentials.
 
 ## Startup after a Java package move
 
