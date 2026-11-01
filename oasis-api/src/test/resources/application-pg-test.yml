@@ -1,0 +1,30 @@
+# Only used with OASIS_PG_TEST=true. Never imports .env or ordinary datasource variables.
+spring:
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:55439/oasis_phase1_test
+    username: oasis_test
+    password: ''
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      connection-init-sql: SET lock_timeout = '5s'
+  flyway:
+    enabled: true
+    clean-disabled: true
+    baseline-on-migrate: false
+    locations: classpath:db/migration
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+server:
+  servlet:
+    session:
+      cookie:
+        secure: false
+      timeout: 30m
+oasis:
+  auth-max-attempts: 1000

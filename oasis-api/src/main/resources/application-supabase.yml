@@ -1,0 +1,27 @@
+# Explicit opt-in after preparing the empty private schema; public is preserved.
+spring:
+  config:
+    import: "optional:file:${OASIS_ENV_FILE:./.env}[.properties]"
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      data-source-properties:
+        currentSchema: oasis_app,public
+        sslmode: require
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.default_schema: oasis_app
+  flyway:
+    enabled: true
+    default-schema: oasis_app
+    schemas: oasis_app
+    create-schemas: false
+    baseline-on-migrate: false
+    clean-disabled: true

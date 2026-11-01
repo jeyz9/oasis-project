@@ -1,0 +1,12 @@
+# Local credentials and generated artifacts, if a repository is initialized later.
+**/.env
+**/.env.*
+!**/.env.example
+**/node_modules/
+**/dist/
+**/target/
+**/.idea/
+**/effective-pom
+**/effective-pom.xml
+*.log
+.local/

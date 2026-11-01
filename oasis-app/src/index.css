@@ -1,0 +1,112 @@
+@import './styles/tokens.css';
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--page);
+  font-family: var(--body-font);
+  line-height: 1.6;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+button {
+  cursor: pointer;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+  color: var(--sage-ink);
+  background: var(--surface);
+  font-weight: 600;
+}
+button:hover:not(:disabled) {
+  background: var(--soft-sage);
+  border-color: var(--sage);
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+}
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  padding: 0.65rem 0.8rem;
+  border-radius: 9px;
+  color: var(--ink);
+  background: var(--white);
+  min-height: 44px;
+}
+textarea {
+  min-height: 95px;
+  resize: vertical;
+}
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+}
+h1,
+h2 {
+  font-family: var(--heading-font);
+  font-weight: 400;
+}
+h1 {
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  max-width: 790px;
+  letter-spacing: -0.035em;
+}
+h2 {
+  font-size: 2rem;
+}
+h3 {
+  font-size: 1.2rem;
+}
+a {
+  color: var(--sage-ink);
+}
+small {
+  font-size: 0.75rem;
+}
+@media (prefers-reduced-motion: no-preference) {
+  button {
+    transition:
+      background 0.15s,
+      border-color 0.15s;
+  }
+}

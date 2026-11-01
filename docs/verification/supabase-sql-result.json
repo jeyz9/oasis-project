@@ -1,0 +1,53 @@
+{
+  "project_id": "zixzqrsrnthgszgxqnfk",
+  "project_name": "oasis",
+  "scope": "SQL compatibility only, via Supabase connector",
+  "probe": {
+    "checks": [
+      "six_migration_scripts_and_28_tables",
+      "private_schema_denies_client_roles",
+      "no_key_update_and_guarded_booking_debit",
+      "full_session_guard",
+      "duplicate_booking_constraint",
+      "grant_owner_foreign_key",
+      "immutable_credit_ledger",
+      "credit_restoration_once",
+      "canonical_room_identity",
+      "room_and_trainer_interval_exclusion",
+      "unlimited_and_unique_review_storage",
+      "jsonb_integer_money_and_immutable_payment_snapshots",
+      "payment_event_deduplication_and_single_fulfillment",
+      "bangkok_cash_flow_periods",
+      "skip_locked_outbox_and_inbox_deduplication",
+      "final_credit_and_seat_reconciliation"
+    ],
+    "status": "PASS",
+    "rolled_back": true,
+    "checks_passed": 16,
+    "postgres_version": "17.6",
+    "migration_scripts": 6,
+    "application_tables": 28,
+    "scratch_schema_absent": true,
+    "public_table_oids_unchanged": true
+  },
+  "post_check": {
+    "verified_at": "2026-10-27 06:01:42.969717+00",
+    "postgres_version": "17.6",
+    "remaining_probe_schemas": 0,
+    "public_tables": 10,
+    "public_rls_tables": 10,
+    "flyway_history": null,
+    "existing_row_counts": {
+      "users": 0,
+      "grants": 0,
+      "ledger": 0,
+      "bookings": 0,
+      "services": 0
+    }
+  },
+  "not_tested": [
+    "Remote JDBC/JPA/API connection",
+    "Concurrent remote sessions",
+    "Real payment or message delivery"
+  ]
+}

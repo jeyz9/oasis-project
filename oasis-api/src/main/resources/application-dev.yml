@@ -1,0 +1,26 @@
+spring:
+  config:
+    import: "optional:file:${OASIS_ENV_FILE:./.env}[.properties]"
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+  flyway:
+    enabled: true
+    clean-disabled: true
+
+
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: INFO
+        orm:
+          jdbc:
+            bind: INFO

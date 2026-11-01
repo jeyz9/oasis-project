@@ -1,0 +1,26 @@
+:root {
+  --sage: #6b8e23;
+  --sage-ink: #3e5614;
+  --sand: #f5f5dc;
+  --terracotta: #e07a5f;
+  --terracotta-ink: #8d3827;
+  --ink: #263528;
+  --muted: #5e695e;
+  --surface: #fffef9;
+  --page: #f8f8f2;
+  --line: #d9dece;
+  --soft-sage: #eaf0df;
+  --error-bg: #fff0e9;
+  --success-bg: #edf5e3;
+  --white: #ffffff;
+  --focus: #38561b;
+  --radius: 18px;
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+  --shadow: 0 6px 25px rgb(38 53 40 / 4%);
+  --body-font: 'Segoe UI', system-ui, sans-serif;
+  --heading-font: Georgia, 'Times New Roman', serif;
+}
