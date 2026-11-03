@@ -1,0 +1,58 @@
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-oasis}
+      POSTGRES_USER: ${POSTGRES_USER:-oasis}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the root .env file}
+    volumes:
+      - oasis_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    networks:
+      - oasis
+
+  api:
+    build:
+      context: ./oasis-api
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-oasis}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-oasis}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the root .env file}
+      OASIS_COOKIE_SECURE: ${OASIS_COOKIE_SECURE:-false}
+      OASIS_NOTIFICATION_WORKER_ENABLED: ${OASIS_NOTIFICATION_WORKER_ENABLED:-true}
+    depends_on:
+      db:
+        condition: service_healthy
+    expose:
+      - "8080"
+    networks:
+      - oasis
+
+  web:
+    build:
+      context: ./oasis-app
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "${WEB_PORT:-5173}:80"
+    networks:
+      - oasis
+
+volumes:
+  oasis_postgres_data:
+
+networks:
+  oasis:
+    driver: bridge
