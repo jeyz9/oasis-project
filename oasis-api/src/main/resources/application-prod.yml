@@ -18,6 +18,7 @@ spring:
       validation-timeout: 5000
       data-source-properties:
         prepareThreshold: 0
+        sslmode: require
 
   flyway:
     enabled: true

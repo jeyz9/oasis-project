@@ -62,6 +62,7 @@ class DevEnvironmentConfigurationTests {
         var environment=load("prod",fixture(),Map.of());
         assertNull(environment.getProperty("SPRING_DATASOURCE_URL"));
         assertNull(environment.getProperty("SPRING_DATASOURCE_PASSWORD"));
+        assertEquals("require",environment.getProperty("spring.datasource.hikari.data-source-properties.sslmode"));
     }
 
     @Test void anAbsentOptionalFileDoesNotSelectAnotherDatabase() {
