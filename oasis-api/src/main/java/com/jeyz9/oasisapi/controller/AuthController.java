@@ -1,6 +1,7 @@
 package com.jeyz9.oasisapi.controller;
 
 import com.jeyz9.oasisapi.component.AuthThrottle;
+import com.jeyz9.oasisapi.component.ApiDoc;
 import com.jeyz9.oasisapi.dto.AuthDto.Login;
 import com.jeyz9.oasisapi.dto.AuthDto.Registration;
 import com.jeyz9.oasisapi.dto.AccountDto;
@@ -41,14 +42,17 @@ public class AuthController {
                           HttpSessionCsrfTokenRepository csrf, AuthThrottle throttle, Clock clock) {
         this.accounts = accounts; this.authentication = authentication; contextRepository = context; csrfRepository = csrf; this.throttle = throttle; this.clock=clock;
     }
+    @ApiDoc(summary="ขอ CSRF token", description="อ่าน token สำหรับส่งใน headerName ที่คืนมาพร้อมกัน ก่อนเรียก login/register/logout หรือ endpoint ที่เปลี่ยนข้อมูล; endpoint นี้ไม่เปลี่ยนข้อมูลธุรกิจ.", tag="Authentication", access="PUBLIC")
     @GetMapping("/auth/csrf") public Map<String,String> csrf(CsrfToken token) {
         return Map.of("token", token.getToken(), "headerName", token.getHeaderName());
     }
+    @ApiDoc(summary="สมัครบัญชีลูกค้า", description="สร้างบัญชี CUSTOMER ใหม่จาก email, password และ displayName; ไม่รับ role จาก client. ต้องส่ง CSRF header จาก /auth/csrf.", tag="Authentication", access="PUBLIC", csrf=true)
     @PostMapping("/auth/register") @ResponseStatus(HttpStatus.CREATED)
     public AccountDto.Me register(@Valid @RequestBody Registration input, HttpServletRequest q) {
         throttle.check(q.getRemoteAddr());
         return accounts.register(input.email(), input.password(), input.displayName());
     }
+    @ApiDoc(summary="เข้าสู่ระบบ", description="ยืนยัน email/password แล้วสร้าง HttpOnly session cookie ใหม่และคืนข้อมูลบัญชี; ต้องส่ง CSRF header ก่อนเข้าสู่ระบบ.", tag="Authentication", access="PUBLIC", csrf=true)
     @PostMapping("/auth/login")
     public AccountDto.Me login(@Valid @RequestBody Login input, HttpServletRequest q, HttpServletResponse r) {
         throttle.check(q.getRemoteAddr());
@@ -67,6 +71,7 @@ public class AuthController {
             return accounts.me((AccountDto.Principal) auth.getPrincipal());
         } catch (AuthenticationException e) { throw fail(401,"INVALID_CREDENTIALS"); }
     }
+    @ApiDoc(summary="ออกจากระบบ", description="ยกเลิก session ปัจจุบันและล้าง security context; ต้องส่ง session cookie และ CSRF header.", tag="Authentication", access="AUTHENTICATED", csrf=true)
     @PostMapping("/auth/logout") @ResponseStatus(HttpStatus.NO_CONTENT)
     public void logout(HttpServletRequest q, HttpServletResponse r) {
         var s = q.getSession(false);
@@ -74,5 +79,6 @@ public class AuthController {
         SecurityContextHolder.clearContext();
         csrfRepository.saveToken(null,q,r);
     }
+    @ApiDoc(summary="ดูบัญชีของฉัน", description="คืนข้อมูลบัญชีและ role ของผู้ใช้ที่เข้าสู่ระบบ โดยไม่รับ user ID จาก client.", tag="Authentication", access="AUTHENTICATED")
     @GetMapping("/me") public AccountDto.Me me(@AuthenticationPrincipal AccountDto.Principal p) { return accounts.me(p); }
 }

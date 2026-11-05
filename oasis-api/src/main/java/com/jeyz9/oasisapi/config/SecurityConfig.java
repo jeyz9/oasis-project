@@ -35,6 +35,7 @@ public class SecurityConfig {
             .csrf(c -> c.csrfTokenRepository(csrf).ignoringRequestMatchers("/api/v1/payments/webhooks/**"))
             .securityContext(c -> c.securityContextRepository(context))
             .authorizeHttpRequests(a -> a
+                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**", "/v3/api-docs.yaml").permitAll()
                 .requestMatchers("/api/v1/auth/**").permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.GET,"/api/v1/payments/capabilities","/api/v1/health").permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.POST,"/api/v1/payments/webhooks/**").permitAll()

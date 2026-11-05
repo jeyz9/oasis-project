@@ -9,6 +9,7 @@ React/TypeScript/Vite frontend (`oasis-app`) and Java 21/Spring Boot/PostgreSQL 
 - [Phase 3 payment adapter, simulation boundary and verification](docs/PHASE3_HANDOFF.md)
 - [Final Phase 4–7 acceptance and verification](docs/PHASE4_7_HANDOFF.md)
 - [Implemented API reference](docs/API.md)
+- [Swagger UI and complete endpoint summary](docs/API.md#swagger-ui-and-openapi)
 - [Operations, metrics and recovery](docs/OPERATIONS.md)
 - [JPA refactor, layers and verification](docs/JPA_REFACTOR_HANDOFF.md)
 - [Working rules](AGENTS.md)
