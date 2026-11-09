@@ -26,7 +26,7 @@ npm run lint
 npm run dev
 ```
 
-The frontend connects `/api` through Vite to `http://127.0.0.1:8080` by default. `OASIS_API_TARGET` can override the local backend target. The optional real-browser journey is launched by the guarded backend test fixture, not by a mocked frontend test.
+The frontend connects `/api` through Vite using `oasis-app/.env`; copy `oasis-app/.env.example` to `oasis-app/.env` and set `OASIS_API_TARGET`. The example points to the hosted API at `https://oasis-api-18g3.onrender.com`. For a local backend, set it to `http://127.0.0.1:8080`. The optional real-browser journey is launched by the guarded backend test fixture, not by a mocked frontend test.
 
 ```powershell
 Set-Location D:\project-ai\oasis-project\oasis-api
